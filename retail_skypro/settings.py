@@ -22,8 +22,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'users',
     'retail',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -83,6 +85,29 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = 'users.User'
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAuthenticated',
+#     ],
+#     'DEFAULT_FILTER_BACKENDS': [
+#         'django_filters.rest_framework.DjangoFilterBackend'
+#     ]
+# }
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
+AUTHENTICATION_BACKENDS = (
+
+    # default backend authorization via login & password
+    'django.contrib.auth.backends.ModelBackend',
+
+    # allow inactive users to login, used to raising an exception if account is not activated
+    'django.contrib.auth.backends.AllowAllUsersModelBackend',)
 
 LANGUAGE_CODE = 'en-us'
 
