@@ -10,6 +10,8 @@ packages = [{include = "retail_skypro"}]
 python = "^3.11"
 django = "^4.1.7"
 djangorestframework = "^3.14.0"
+psycopg2-binary = "^2.9.5"
+envparse = "^0.2.0"
 
 
 [build-system]

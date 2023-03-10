@@ -1,25 +1,42 @@
 from django.contrib.auth.models import BaseUserManager
-from django.db import models
 
 
-class UserManager(BaseUserManager, models.Manager):
-    """ Handles User Auth Process"""
-    def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
-        """" Form Valid """
+class UserManager(BaseUserManager):
+    """
+    Create user function. Required fields are passed here.
+    """
+
+    def create_user(self, username, email, first_name, last_name, phone, password=None, role='user'):
+        if not email:
+            raise ValueError('Users must have an email address')
         user = self.model(
-            email=email,
-            is_staff=is_staff,
-            is_superuser=is_superuser,
-            **extra_fields
+            username=username,
+            email=self.normalize_email(email),
+            first_name=first_name,
+            last_name=last_name,
+            phone=phone,
+            role=role
         )
+        user.is_active = True
         user.set_password(password)
-        user.save(using=self.db)
+        user.save(using=self._db)
+
         return user
 
-    def create_user(self, email, password=None, **extra_fields ):
-        """ Creates a normal user"""
-        return self._create_user(email, password, False, False, **extra_fields)
+    def create_superuser(self, username, email, first_name, last_name, phone, password=None, role='admin'):
+        """
+        Create superuser function. Use 'createsuperuser' command
+        """
 
-    def create_superuser(self, email, password=None, **extra_fields):
-        """ Creates a super user"""
-        return self._create_user(email, password, True, True, **extra_fields)
+        user = self.create_user(
+            username=username,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            phone=phone,
+            password=password,
+            role=role
+        )
+
+        user.save(using=self._db)
+        return user

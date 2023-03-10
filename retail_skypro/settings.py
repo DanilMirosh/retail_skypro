@@ -1,12 +1,19 @@
 from pathlib import Path
 
+from envparse import env
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-=!ht%&0-#3)xqnpn@f(t#oibsi!p_r@$*-odp+%beg(indbu24'
+ENV_FILE_PATH = BASE_DIR.joinpath('.env')
 
-DEBUG = True
+if ENV_FILE_PATH.is_file():
+    env.read_envfile(path=ENV_FILE_PATH)
 
-ALLOWED_HOSTS = []
+SECRET_KEY = env.str('SECRET_KEY')
+
+DEBUG = env.bool('DEBUG')
+
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -50,8 +57,12 @@ WSGI_APPLICATION = 'retail_skypro.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env.str('DB_NAME'),
+        'USER': env.str('DB_USER'),
+        'PASSWORD': env.str('DB_PASSWORD'),
+        'HOST': env.str('DB_HOST', default='127.0.0.1'),
+        'PORT': '5432',
     }
 }
 
@@ -69,6 +80,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+AUTH_USER_MODEL = 'users.User'
 
 LANGUAGE_CODE = 'en-us'
 
